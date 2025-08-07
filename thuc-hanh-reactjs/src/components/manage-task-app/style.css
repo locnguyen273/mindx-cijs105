@@ -1,0 +1,53 @@
+.manage-task-app {
+  padding: 16px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+
+  .todo-column {
+    background-color: #e6ecf0;
+    padding: 12px;
+
+    .todo-column-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .count {
+        background-color: #d5d5d5;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: block;
+        text-align: center;
+        line-height: 30px;
+      }
+      .todo-column-header-left,
+      .todo-column-header-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .btn-plus,
+      .btn-ellipsis {
+        background-color: #d5d5d5;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: block;
+        text-align: center;
+        line-height: 0px;
+        cursor: pointer;
+      }
+    }
+
+    .todo-column-body {
+      display: flex;
+      flex-direction: column;
+      margin-top: 16px ;
+      gap: 16px;
+    }
+  }
+}
