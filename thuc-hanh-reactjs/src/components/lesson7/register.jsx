@@ -1,64 +1,67 @@
 import React from "react";
-import { Button, Form, Input, Space } from "antd";
+import { Button, Form, Input, Modal } from "antd";
 
 const Register = (props) => {
-  const { formData, setFormData } = props;
-  
-  const handleChangeFormData = (event) => {
-    setFormData((prev) => ({
-      ...prev,
-      [event.target.name]: event.target.value
-    }))
-  }
+  const { formData, setFormData, isOpenModal, handleOk, handleCancel, handleCancelCreateUser, handleCreateUser } = props;
+  const [form] = Form.useForm();
+
+  React.useEffect(() => {
+    form.setFieldsValue({
+      fullname: formData.fullname,
+      email: formData.email,
+      phoneNumber: formData.phoneNumber,
+      password: formData.password,
+      location: formData.location,
+    });
+  }, [form, formData]);
+
+  const handleValuesChange = (_, allValues) => {
+    setFormData(allValues);
+  };
 
   return (
     <div>
-      <Form layout="vertical" autoComplete="off">
-        <Form.Item
-          name="fullname"
-          label="Full Name"
-        >
-          <Input value={formData.fullname} name="fullname" onChange={handleChangeFormData} placeholder="input fullname" />
-        </Form.Item>
-
-        <Form.Item
-          name="email"
-          label="Email address"
-        >
-          <Input value={formData.email} name="email" onChange={handleChangeFormData} placeholder="input email address" />
-        </Form.Item>
-
-        <Form.Item
-          name="phoneNumber"
-          label="Phone Number"
-        >
-          <Input value={formData.phoneNumber} name="phoneNumber" onChange={handleChangeFormData} placeholder="input phone number" />
-        </Form.Item>
-
-        <Form.Item
-          name="password"
-          label="Password"
-        >
-          <Input type="password" value={formData.password} name="password" onChange={handleChangeFormData} placeholder="input password" />
-        </Form.Item>
-
-        <Form.Item
-          name="location"
-          label="Location (optional)"
-        >
-          <Input value={formData.location} name="location" onChange={handleChangeFormData} placeholder="input location" />
-        </Form.Item>
-        {/* <Form.Item>
-          <Space>
-            <Button type="primary" htmlType="submit">
-              Submit
+      <Modal
+        title="Create New User"
+        closable={{ "aria-label": "Custom Close Button" }}
+        open={isOpenModal}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        destroyOnHidden
+        footer={
+          <div
+            className="d-grid"
+            style={{ gridTemplateColumns: "repeat(2, 1fr)", gap: "16px" }}
+          >
+            <Button onClick={handleCancelCreateUser}>Cancel</Button>
+            <Button type="primary" onClick={handleCreateUser}>
+              Save
             </Button>
-            <Button htmlType="button" onClick={onFill}>
-              Fill
-            </Button>
-          </Space>
-        </Form.Item> */}
-      </Form>
+          </div>
+        }
+      >
+        <Form form={form} onValuesChange={handleValuesChange} layout="vertical" autoComplete="off">
+          <Form.Item label="Full Name" name="fullname">
+            <Input placeholder="input fullname" />
+          </Form.Item>
+
+          <Form.Item label="Email" name="email">
+            <Input placeholder="input email" />
+          </Form.Item>
+
+          <Form.Item label="Phone Number" name="phoneNumber">
+            <Input placeholder="input phone number" />
+          </Form.Item>
+
+          <Form.Item label="Password" name="password">
+            <Input.Password placeholder="input password" />
+          </Form.Item>
+
+          <Form.Item label="Location" name="location">
+            <Input placeholder="input location" />
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };

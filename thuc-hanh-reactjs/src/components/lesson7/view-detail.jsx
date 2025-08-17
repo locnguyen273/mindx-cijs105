@@ -11,16 +11,20 @@ const ViewDetail = (props) => {
     handleCancelCreateUser,
     handleUpdateUser,
   } = props;
+  const [form] = Form.useForm();
 
   React.useEffect(() => {
-    console.log(userDetail);
-  }, []);
+    form.setFieldsValue({
+      fullname: userDetail.fullname,
+      email: userDetail.email,
+      phoneNumber: userDetail.phoneNumber,
+      password: userDetail.password,
+      location: userDetail.location,
+    });
+  }, [form, userDetail]);
 
-  const handleChangeFormData = (event) => {
-    setUserDetail((prev) => ({
-      ...prev,
-      [event.target.name]: event.target.value,
-    }));
+  const handleValuesChange = (_, allValues) => {
+    setUserDetail(allValues);
   };
 
   return (
@@ -31,9 +35,12 @@ const ViewDetail = (props) => {
         open={isOpenModalView}
         onOk={handleOkUserDetail}
         onCancel={handleCancelUserDetail}
-        destroyOnClose
+        destroyOnHidden
         footer={
-          <div className="row">
+          <div
+            className="d-grid"
+            style={{ gridTemplateColumns: "repeat(2, 1fr)", gap: "16px" }}
+          >
             <Button onClick={handleCancelCreateUser}>Cancel</Button>
             <Button type="primary" onClick={handleUpdateUser}>
               Save
@@ -42,51 +49,25 @@ const ViewDetail = (props) => {
         }
       >
         {userDetail ? (
-          <Form layout="vertical" autoComplete="off">
-            <Form.Item name="fullname" label="Full Name">
-              <Input
-                value={userDetail.fullname}
-                name="fullname"
-                onChange={handleChangeFormData}
-                placeholder="Input full name"
-              />
+          <Form form={form} layout="vertical" autoComplete="off" onValuesChange={handleValuesChange}>
+            <Form.Item label="Full Name" name="fullname">
+              <Input placeholder="input fullname" />
             </Form.Item>
 
-            <Form.Item name="email" label="Email address">
-              <Input
-                value={userDetail.email}
-                name="email"
-                onChange={handleChangeFormData}
-                placeholder="Input email address"
-              />
+            <Form.Item label="Email" name="email">
+              <Input placeholder="input email" />
             </Form.Item>
 
-            <Form.Item name="phoneNumber" label="Phone Number">
-              <Input
-                value={userDetail.phoneNumber}
-                name="phoneNumber"
-                onChange={handleChangeFormData}
-                placeholder="Input phone number"
-              />
+            <Form.Item label="Phone Number" name="phoneNumber">
+              <Input placeholder="input phone number" />
             </Form.Item>
 
-            <Form.Item name="password" label="Password">
-              <Input
-                type="password"
-                value={userDetail.password}
-                name="password"
-                onChange={handleChangeFormData}
-                placeholder="Input password"
-              />
+            <Form.Item label="Password" name="password">
+              <Input.Password placeholder="input password" />
             </Form.Item>
 
-            <Form.Item name="location" label="Location (optional)">
-              <Input
-                value={userDetail.location}
-                name="location"
-                onChange={handleChangeFormData}
-                placeholder="Input location"
-              />
+            <Form.Item label="Location" name="location">
+              <Input placeholder="input location" />
             </Form.Item>
           </Form>
         ) : (

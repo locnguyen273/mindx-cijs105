@@ -21,6 +21,7 @@ const ListUsers = () => {
   });
   const [users, setUsers] = useState([]);
   const [userDetail, setUserDetail] = useState({});
+  const [userId, setUserId] = useState("");
 
   const handleGetListUsers = async () => {
     try {
@@ -99,7 +100,26 @@ const ListUsers = () => {
     }
   };
 
-  const handleUpdateUser = () => {};
+  const handleUpdateUser = async () => {
+    try {
+      setIsDisplaySpinner(true);
+      const result = await axios.put(
+        `https://mindx-mockup-server.vercel.app/api/resources/users/${userId}?apiKey=68a1c6779f3bbb05c6342994`,
+        userDetail
+      );
+      if (result.status === 200) {
+        setIsOpenModalView(false);
+        handleGetListUsers();
+        messageApi.open({
+          type: "success",
+          content: result.data?.message ?? "Update user successful",
+        });
+        setIsDisplaySpinner(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleDeleteUser = async (id) => {
     try {
@@ -132,100 +152,100 @@ const ListUsers = () => {
   const handleViewUserDetail = (id) => {
     setIsOpenModalView(true);
     const user = users.find((item) => item._id === id);
+    setUserId(user._id);
     setUserDetail(user);
   };
 
   return (
     <div className="lesson-seven">
       {contextHolder}
-      {isDisplaySpinner && (
+      {isDisplaySpinner ? (
         <div className="had-spinner">
           <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
         </div>
-      )}
-      <div>
+      ) : (
         <div>
-          <div
-            className="d-flex justify-content-between align-items-center"
-            style={{ maxWidth: "80%", margin: "auto" }}
-          >
-            <h1>List User</h1>
-            <Button onClick={() => showModal()}>Add new user</Button>
+          <div>
+            <div
+              className="d-flex justify-content-between align-items-center"
+              style={{ maxWidth: "80%", margin: "auto" }}
+            >
+              <h1>List User</h1>
+              <Button onClick={() => showModal()}>Add new user</Button>
+            </div>
+
+            <table className="table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Full Name</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">Phone Number</th>
+                  <th scope="col">Location</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.length > 0 ? (
+                  users?.map((item, index) => {
+                    return (
+                      <tr key={item._id}>
+                        <th scope="row">{index + 1}</th>
+                        <td>{item?.fullname}</td>
+                        <td>{item?.email}</td>
+                        <td>{item?.phoneNumber}</td>
+                        <td>{item?.location}</td>
+                        <td>
+                          <div>
+                            <Button
+                              onClick={() => handleViewUserDetail(item._id)}
+                            >
+                              View Detail
+                            </Button>
+                            <Button onClick={() => handleDeleteUser(item._id)}>
+                              Delete
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan={2} style={{ textAlign: "center" }}>
+                      Không có dữ liệu
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
 
-          <table className="table">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Full Name</th>
-                <th scope="col">Email</th>
-                <th scope="col">Phone Number</th>
-                <th scope="col">Location</th>
-                <th scope="col">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.length > 0 ? (
-                users?.map((item, index) => {
-                  return (
-                    <tr key={item._id}>
-                      <th scope="row">{index + 1}</th>
-                      <td>{item?.fullname}</td>
-                      <td>{item?.email}</td>
-                      <td>{item?.phoneNumber}</td>
-                      <td>{item?.location}</td>
-                      <td>
-                        <div>
-                          <Button
-                            onClick={() => handleViewUserDetail(item._id)}
-                          >
-                            View Detail
-                          </Button>
-                          <Button onClick={() => handleDeleteUser(item._id)}>
-                            Delete
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              ) : (
-                <p>No data !!!</p>
-              )}
-            </tbody>
-          </table>
+          {isOpenModal && (
+            <Register
+              formData={formData}
+              setFormData={setFormData}
+              isOpenModal={isOpenModal}
+              handleOk={handleOk}
+              handleCancel={handleCancel}
+              handleCancelCreateUser={handleCancelCreateUser}
+              handleCreateUser={handleCreateUser}
+            />
+          )}
+
+          {isOpenModalView && (
+            <ViewDetail
+              userDetail={userDetail}
+              setUserDetail={setUserDetail}
+              isOpenModalView={isOpenModalView}
+              handleOkUserDetail={handleOkUserDetail}
+              handleCancelUserDetail={handleCancelUserDetail}
+              handleCancelCreateUser={handleCancelCreateUser}
+              handleUpdateUser={handleUpdateUser}
+            />
+          )}
         </div>
-
-        <Modal
-          title="Basic Modal"
-          closable={{ "aria-label": "Custom Close Button" }}
-          open={isOpenModal}
-          onOk={handleOk}
-          onCancel={handleCancel}
-          destroyOnClose
-          footer={
-            <div className="row">
-              <Button onClick={handleCancelCreateUser}>Cancel</Button>
-              <Button type="primary" onClick={handleCreateUser}>
-                Save
-              </Button>
-            </div>
-          }
-        >
-          <Register formData={formData} setFormData={setFormData} />
-        </Modal>
-
-        {isOpenModalView && <ViewDetail
-          userDetail={userDetail}
-          setUserDetail={setUserDetail}
-          isOpenModalView={isOpenModalView}
-          handleOkUserDetail={handleOkUserDetail}
-          handleCancelUserDetail={handleCancelUserDetail}
-          handleCancelCreateUser={handleCancelCreateUser}
-          handleUpdateUser={handleUpdateUser}
-        />}
-        
-      </div>
+      )}
     </div>
   );
 };
