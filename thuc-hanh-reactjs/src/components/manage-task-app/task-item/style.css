@@ -9,9 +9,45 @@
     align-items: center;
   }
 
+  .task-item-header .left {
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .task-item-header .btn-edit-task {
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    background: transparent;
+  }
+
+  .task-item-header .btn-edit-task:hover {
+    border-color: transparent;
+  }
+
   .task-item-body {
     padding: 12px;
   }
+
+  .task-item-body .btn-mindx-school {
+    min-height: 26px;
+    background: #0013FE;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 12px;
+    padding: 8px 16px;
+    margin: 8px 0 0;
+  }
+
+  .task-item-body .description {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
   .task-item-footer {
     padding: 12px;
     border-top: 1px solid #d5d5d5;
