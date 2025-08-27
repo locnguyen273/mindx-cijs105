@@ -7,6 +7,7 @@ import Login from "./pages/login";
 import CommonLayout from "./templates/CommonLayout/index.jsx";
 import AuthLayout from "./templates/AuthLayout/index.jsx";
 import MindxExample from "./pages/mindx-example/index.jsx";
+import ToDoCustomHooks from "./pages/todo-custom-hooks";
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
           <Route path="users" element={<ListUsers />}/>
           <Route path="products" element={<ListProduct />}/>
           <Route path="mindx-example" element={<MindxExample />}/>
+          <Route path="todo-custom-hooks" element={<ToDoCustomHooks />}/>
         </Route>
 
         <Route path="" element={<AuthLayout />}>

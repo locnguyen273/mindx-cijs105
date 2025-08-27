@@ -36,6 +36,7 @@ const HeaderComponent = () => {
                 <Link className="nav-link" to={"/users"}>Users </Link>
                 <Link className="nav-link" to={"/products"}>Products</Link>
                 <Link className="nav-link" to={"/mindx-example"}>Mindx Example</Link>
+                <Link className="nav-link" to={"/todo-custom-hooks"}>Todo app custom hooks</Link>
                 
               </div>
             </div>
