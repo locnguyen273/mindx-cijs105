@@ -4,10 +4,13 @@ import { LoadingOutlined } from "@ant-design/icons";
 import Register from "./register";
 import ViewDetail from "./view-detail";
 import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
 
 import "./style.css";
+import { fetchAllUsers } from "../../stores/userReducer";
 
 const ListUsers = () => {
+  const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
   const [isOpenModal, setIsOpenModal] = useState();
   const [isOpenModalView, setIsOpenModalView] = useState();
@@ -19,28 +22,20 @@ const ListUsers = () => {
     password: "",
     location: "",
   });
-  const [users, setUsers] = useState([]);
+  const users = useSelector(state => state.users.userList);
+  const userStatus = useSelector(state => state.users.status);
   const [userDetail, setUserDetail] = useState({});
   const [userId, setUserId] = useState("");
 
-  const handleGetListUsers = async () => {
-    try {
-      setIsDisplaySpinner(true);
-      const result = await axios.get(
-        "https://mindx-mockup-server.vercel.app/api/resources/users?apiKey=68a1c6779f3bbb05c6342994"
-      );
-      if (result.status === 200) {
-        setUsers(result.data?.data?.data);
-        setIsDisplaySpinner(false);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
-    handleGetListUsers();
-  }, []);
+    if (userStatus === 'idle') {
+      dispatch(fetchAllUsers());
+    }
+  }, [userStatus, dispatch]);
+
+  if (userStatus === 'loading') {
+    return <div>Loading posts...</div>;
+  }
 
   const showModal = () => {
     setIsOpenModal(true);
@@ -88,7 +83,7 @@ const ListUsers = () => {
           password: "",
           location: "",
         });
-        handleGetListUsers();
+        dispatch(fetchAllUsers());
         messageApi.open({
           type: "success",
           content: result.data?.message ?? "Create successful",
@@ -109,7 +104,7 @@ const ListUsers = () => {
       );
       if (result.status === 200) {
         setIsOpenModalView(false);
-        handleGetListUsers();
+        dispatch(fetchAllUsers());
         messageApi.open({
           type: "success",
           content: result.data?.message ?? "Update user successful",
@@ -133,7 +128,7 @@ const ListUsers = () => {
           type: "success",
           content: result?.data?.message ?? "Deleted user successful",
         });
-        handleGetListUsers();
+        dispatch(fetchAllUsers());
         setIsDisplaySpinner(false);
       }
     } catch (error) {
