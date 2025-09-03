@@ -1,11 +1,22 @@
 import React from 'react'
-import { getAllPostService } from '../../services/post.service';
+import { useSelector, useDispatch } from 'react-redux'
+import { fetchAllPosts } from './../../stores/postReducer';
 
 const ListPosts = () => {
-  const [posts, setPosts] = React.useState([]);
+  const dispatch = useDispatch();
+  const posts = useSelector(state => state.post.posts);
+  const postStatus = useSelector(state => state.post.status);
+
   React.useEffect(() => {
-    getAllPostService().then(res => setPosts(res.data)).catch(err => console.log(err));
-  }, [])
+    if (postStatus === 'idle') {
+      dispatch(fetchAllPosts());
+    }
+  }, [postStatus, dispatch]);
+
+  if (postStatus === 'loading') {
+    return <div>Loading posts...</div>;
+  }
+
   return (
     <div className='d-grid' style={{ gridTemplateColumns: "repeat(3, 1fr)", gap: "16px" }}>
       {posts && posts.length > 0 && posts.map(post => (
